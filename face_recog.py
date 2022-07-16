@@ -2,6 +2,7 @@ import tensorflow as tf
 from keras.preprocessing.image import ImageDataGenerator
 import numpy as np
 from tensorflow.keras.preprocessing import image
+from tensorflow.keras.utils import to_categorical
 
 train_datagen = ImageDataGenerator(
     rescale=1./255,
@@ -13,15 +14,14 @@ training_set = train_datagen.flow_from_directory(
     'Dataset/Training_Set/',
     target_size=(64, 64),
     batch_size=32,
-    class_mode='binary')  # Training Set
+    class_mode='categorical')  # Training Set
 
 test_datagen = ImageDataGenerator(rescale=1./255)
 test_set = test_datagen.flow_from_directory(
     'Dataset/Test_Set/',
     target_size=(64, 64),
     batch_size=32,
-    class_mode='binary')  # Test Set
-
+    class_mode='categorical')  # Test Set
 
 # Building The CNN
 
@@ -34,19 +34,15 @@ cnn.add(tf.keras.layers.Conv2D(filters=32, kernel_size=3, activation='relu'))
 cnn.add(tf.keras.layers.MaxPool2D(pool_size=2, strides=2))
 cnn.add(tf.keras.layers.Flatten())
 cnn.add(tf.keras.layers.Dense(units=128, activation='relu'))
-cnn.add(tf.keras.layers.Dense(units=1, activation='sigmoid'))
+cnn.add(tf.keras.layers.Dense(units=3, activation='softmax'))
 
 
 # # Compiling the CNN
 
-cnn.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+cnn.compile(optimizer='adam', loss='categorical_crossentropy',
+            metrics=['accuracy'])
 
 cnn.fit(x=training_set, validation_data=test_set, epochs=5)
-# cnn.save_weights('./checkpoints/')
-
-
-# Restore the weights
-# cnn.load_weights('./checkpoints/')
 
 test_image = image.load_img(
     'single_pred/ab.jpeg', target_size=(64, 64))
