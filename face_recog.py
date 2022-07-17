@@ -33,8 +33,8 @@ cnn.add(tf.keras.layers.MaxPool2D(pool_size=2, strides=2))
 cnn.add(tf.keras.layers.Conv2D(filters=32, kernel_size=3, activation='relu'))
 cnn.add(tf.keras.layers.MaxPool2D(pool_size=2, strides=2))
 cnn.add(tf.keras.layers.Flatten())
-cnn.add(tf.keras.layers.Dense(units=128, activation='relu'))
-cnn.add(tf.keras.layers.Dense(units=3, activation='softmax'))
+cnn.add(tf.keras.layers.Dense(units=140, activation='relu'))
+cnn.add(tf.keras.layers.Dense(units=4, activation='softmax'))
 
 
 # # Compiling the CNN
@@ -42,7 +42,7 @@ cnn.add(tf.keras.layers.Dense(units=3, activation='softmax'))
 cnn.compile(optimizer='adam', loss='categorical_crossentropy',
             metrics=['accuracy'])
 
-cnn.fit(x=training_set, validation_data=test_set, epochs=5)
+cnn.fit(x=training_set, validation_data=test_set, epochs=8)
 
 test_image = image.load_img(
     'single_pred/ab.jpeg', target_size=(64, 64))
@@ -51,11 +51,4 @@ test_image = np.expand_dims(test_image, axis=0)
 result = cnn.predict(test_image/255.0)
 
 
-if result[0][0] > 0.5:
-    prediction = 'Sarthak'
-else:
-    prediction = 'Elon'
-
-
-print(prediction)
 cnn.save('saved_model/my_model')
