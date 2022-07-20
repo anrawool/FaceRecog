@@ -82,13 +82,13 @@ class FaceRecogTrainer():
 
 FaceRecog = FaceRecogTrainer()
 FaceRecog.trainTestPP('./Dataset/Training_Set',
-                      './Dataset/Test_Set', network_type='categorical')
-FaceRecog.ModelCreator(activation='softmax')
-FaceRecog.ModelCompiler(loss='categorical_crossentropy')
-FaceRecog.ModelTrainer(epochs=1)
-FaceRecog.ModelSaver(saveDirectory="test_model")
+                      './Dataset/Test_Set', network_type='categorical')  # Training and Testing Dataset Preprocessor
+FaceRecog.ModelCreator(activation='softmax')  # Model Creation
+FaceRecog.ModelCompiler(loss='categorical_crossentropy')  # Model Compiler
+FaceRecog.ModelTrainer(epochs=1)  # Model Trainer
+FaceRecog.ModelSaver(saveDirectory="test_model")  # Model Saver
 result = FaceRecog.TestImagePred('single_pred/image.jpeg',
-                                 'saved_model/my_model', target_size=(64, 64))
+                                 'saved_model/my_model', target_size=(64, 64))  # Model Tester
 
 results = []
 
