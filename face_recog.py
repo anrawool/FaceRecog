@@ -2,9 +2,6 @@ import tensorflow as tf
 from keras.preprocessing.image import ImageDataGenerator
 import numpy as np
 from tensorflow.keras.preprocessing import image
-from tensorflow.keras.utils import to_categorical
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.callbacks import EarlyStopping
 
 
 class FaceRecogTrainer():
@@ -48,21 +45,21 @@ class FaceRecogTrainer():
         self.cnn.add(tf.keras.layers.MaxPool2D(pool_size=2, strides=2))
         self.cnn.add(tf.keras.layers.Flatten())
         self.cnn.add(tf.keras.layers.BatchNormalization())
+        self.cnn.add(tf.keras.layers.Dense(units=512, activation='relu'))
+        self.cnn.add(tf.keras.layers.Dropout(0.2))
+        self.cnn.add(tf.keras.layers.BatchNormalization())
         self.cnn.add(tf.keras.layers.Dense(units=256, activation='relu'))
         self.cnn.add(tf.keras.layers.Dropout(0.2))
         self.cnn.add(tf.keras.layers.BatchNormalization())
         self.cnn.add(tf.keras.layers.Dense(units=128, activation='relu'))
-        self.cnn.add(tf.keras.layers.Dropout(0.2))
         self.cnn.add(tf.keras.layers.BatchNormalization())
         self.cnn.add(tf.keras.layers.Dense(units=64, activation='relu'))
+        self.cnn.add(tf.keras.layers.Dropout(0.2))
         self.cnn.add(tf.keras.layers.BatchNormalization())
         self.cnn.add(tf.keras.layers.Dense(units=32, activation='relu'))
         self.cnn.add(tf.keras.layers.Dropout(0.2))
         self.cnn.add(tf.keras.layers.BatchNormalization())
         self.cnn.add(tf.keras.layers.Dense(units=16, activation='relu'))
-        self.cnn.add(tf.keras.layers.Dropout(0.2))
-        self.cnn.add(tf.keras.layers.BatchNormalization())
-        self.cnn.add(tf.keras.layers.Dense(units=8, activation='relu'))
         self.cnn.add(tf.keras.layers.Dense(units=out_neurons, activation=activation))
         return self.cnn
 
@@ -70,14 +67,14 @@ class FaceRecogTrainer():
 
     def ModelCompiler(self, optim="adam", loss='binary_crossentropy', metrics=['accuracy']):
         # # Compiling the CNN
-        self.cnn.compile(optimizer=Adam(learning_rate=0.01), loss=loss,
+        self.cnn.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.01), loss=loss,
                          metrics=metrics)
 
     # 4. Model Trainer
 
     def ModelTrainer(self, epochs=5):
         history = self.cnn.fit(x=self.training_set,
-                     validation_data=self.test_set, epochs=epochs, callbacks=[EarlyStopping(monitor='val_accuracy', patience=10, min_delta=0.001, restore_best_weights=True)])
+                     validation_data=self.test_set, epochs=epochs, callbacks=[tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=10, min_delta=0.001, restore_best_weights=True)])
         return history
 
     # 5. Model Saver
@@ -94,21 +91,18 @@ class FaceRecogTrainer():
         result = cnn.predict(Testimage/255.0)
         return result
 
-
-# Example Usuage
-
 FaceRecog = FaceRecogTrainer()
-# FaceRecog.trainTestPP('./Dataset/Training_Set',
-#                    './Dataset/Test_Set', network_type='categorical')  # Training and Testing Dataset Preprocessor
-# model = FaceRecog.ModelCreator(activation='softmax')  # Model Creation
-# print(model.summary())
-# FaceRecog.ModelCompiler(loss='categorical_crossentropy')  # Model Compiler
-# FaceRecog.ModelTrainer(epochs=10)  # Model Trainer
-# FaceRecog.ModelSaver(saveDirectory="test_model_latest")  # Model Saver
+FaceRecog.trainTestPP('./Dataset/Training_Set',
+                   './Dataset/Test_Set', network_type='categorical')  # Training and Testing Dataset Preprocessor
+model = FaceRecog.ModelCreator(activation='softmax')  # Model Creation
+print(model.summary())
+FaceRecog.ModelCompiler(loss='categorical_crossentropy')  # Model Compiler
+
+FaceRecog.ModelTrainer(epochs=10)  # Model Trainer
+FaceRecog.ModelSaver(saveDirectory="test_model_latest")  # Model Saver
 results = []
 for i in range(1, 10):
-    # result = FaceRecog.TestImagePred(f'Dataset/Test_Set/sarthak/sarthak_{i}.jpg', 'test_model_latest/model', target_size=(64, 64))  # Model Tester
-    result = FaceRecog.TestImagePred(f'Dataset/Test_Set/Sarthak/sarthak_{i}.jpg', 'test_model_latest/model', target_size=(64, 64))  # Model Tester
+    result = FaceRecog.TestImagePred(f'Dataset/Test_Set/sarthak/sarthak_{i}.jpg', 'test_model_latest/model', target_size=(64, 64))  # Model Tester
     for num in result[0]:
         num = round(num, 2)
     results.append(result[0])

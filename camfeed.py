@@ -3,9 +3,9 @@ import os
 from PIL import Image
 name = input("Enter you name: ")
 num_images = int(input("Enter the number of images required: "))
-def create_images(name, place='Sarthak'):
-    os.chdir(f"/Users/abhijitrawool/Documents/Sarthak/Programming_Projects/Face Recog/{place}/")
-    for i in range(1, num_images+1):
+def create_images(name):
+    os.chdir(f"/Users/abhijitrawool/Documents/Sarthak/Programming_Projects/Face Recog/Dataset/Training_Set/Sarthak/")
+    for i in range(1046, num_images+1):
         print(i)
         cam_port = 0
         cam = cv2.VideoCapture(cam_port)

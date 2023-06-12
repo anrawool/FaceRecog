@@ -23,4 +23,4 @@ class DatasetGeneralizer():
             except Exception:
                 continue
 gen = DatasetGeneralizer()
-gen.duplicate_dataset(2000, 5001, 'Dataset/Training_Set/sarthak/sarthak_', 'Dataset/Training_Set/sarthak/sarthak_', initial_file_extension='jpg', copy_file_extension='jpg')
+gen.duplicate_dataset(1267, 5001, 'Dataset/Training_Set/Sarthak/sarthak_', 'Dataset/Training_Set/Sarthak/sarthak_', initial_file_extension='jpg', copy_file_extension='jpg')
